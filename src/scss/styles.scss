@@ -1,0 +1,19 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.test {
+  background: #6495ed;
+}
+
+::placeholder {
+  color: #34d331;
+}
+
+.image-container {
+  background: url('/images/colors.jpg');
+  height: 50px;
+  width: 50px;
+}
