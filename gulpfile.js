@@ -97,8 +97,16 @@ gulp.task('js-lint', function () {
         .pipe(esLint.failAfterError())
 });
 
+gulp.task('js', function () {
+    return gulp.src(paths.srcJS)
+        .pipe(gulp.dest(paths.distJS))
+        .pipe(browserSync.reload({
+            stream: true
+        }))
+});
+
 /* Real time run local server in browser  */
-gulp.task('serve', [ 'sass', 'twig', 'scss-lint', 'js-lint' ], function () {
+gulp.task('serve', [ 'sass', 'twig', 'js', 'scss-lint', 'js-lint' ], function () {
 
     browserSync.init({
         server: {
@@ -108,7 +116,7 @@ gulp.task('serve', [ 'sass', 'twig', 'scss-lint', 'js-lint' ], function () {
 
     gulp.watch(paths.srcSCSS, [ 'sass' ]);
     gulp.watch(paths.srcTwig, [ 'twig' ]);
-    gulp.watch(paths.srcJS).on('change', browserSync.reload);
+    gulp.watch(paths.srcJS, [ 'js' ]);
 });
 
 /* Run dev server tasks */
