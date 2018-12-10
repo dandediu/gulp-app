@@ -3,20 +3,23 @@
 const gulp = require('gulp'),
     sass = require('gulp-sass'),
     twig = require('gulp-twig'),
-    scssLint = require('gulp-sass-lint'),
+    scss_lint = require('gulp-sass-lint'),
     esLint = require('gulp-eslint'),
-    minify = require('gulp-minify'),
     source_maps = require('gulp-sourcemaps'),
-    autoPrefixer = require('gulp-autoprefixer'),
-    inline_base64 = require('gulp-inline-base64');
-
+    auto_prefix = require('gulp-autoprefixer'),
+    inline_base64 = require('gulp-inline-base64'),
+    cleanHTML = require('gulp-htmlclean'),
+    cleanCSS = require('gulp-clean-css'),
+    concat = require('gulp-concat'),
+    uglify = require('gulp-uglify'),
+    del = require('del');
 
 const browserSync = require('browser-sync').create();
 
 /* Config for ES Lint */
 const esLintConfig = {
     rules: {
-        'quotes': [1, 'single'],
+        'quotes': [ 1, 'single' ],
         'strict': 2,
         'camelcase': 1,
         "comma-dangle": 2
@@ -33,7 +36,7 @@ const esLintConfig = {
 /* Application paths references */
 const paths = {
     src: 'src/**/*',
-    srcTwig: ['src/**/*.twig','!src/**/_*/*'],
+    srcTwig: [ 'src/**/*.twig', '!src/**/_**/*' ], // all .twig files and exclude folders starting with "_"
     srcSCSS: 'src/scss/**/*.scss',
     srcJS: 'src/js/**/*.js',
     dist: 'dist',
@@ -42,27 +45,22 @@ const paths = {
     distJS: 'dist/js'
 };
 
-/* Real time browser synchronization */
-gulp.task('browserSync', function () {
-    browserSync.init({
-        server: {
-            baseDir: paths.dist
-        },
-    })
-});
+/**
+ *   DEVELOPMENT MODE
+ */
 
 /* SCSS to CSS compiler with source maps */
 gulp.task('sass', function () {
     return gulp.src(paths.srcSCSS)
         .pipe(source_maps.init())
-        .pipe(sass.sync({outputStyle: 'compressed'}).on('error', sass.logError))
-        .pipe(sass())
+        // .pipe(sass.sync().on('error', sass.logError))
+        .pipe(sass()).on('error', sass.logError)
         .pipe(inline_base64({
             baseDir: 'src',
             //maxSize: 14 * 1024, // small files (<14 Kb) avoids DNS requests and makes the page loading faster
             debug: true
         }))
-        .pipe(autoPrefixer("last 2 version", "> 1%", {
+        .pipe(auto_prefix("last 2 version", "> 1%", {
             cascade: true
         }))
         .pipe(source_maps.write())
@@ -76,15 +74,18 @@ gulp.task('sass', function () {
 gulp.task('twig', function () {
     return gulp.src(paths.srcTwig)
         .pipe(twig()).on('error', (error) => console.log(error)) //  log error handler
-        .pipe(gulp.dest(paths.dist));
+        .pipe(gulp.dest(paths.dist))
+        .pipe(browserSync.reload({
+            stream: true
+        }))
 });
 
 /* SCSS linter */
 gulp.task('scss-lint', function () {
     return gulp.src(paths.srcSCSS)
-        .pipe(scssLint())
-        .pipe(scssLint.format())
-        .pipe(scssLint.failOnError())
+        .pipe(scss_lint())
+        .pipe(scss_lint.format())
+        .pipe(scss_lint.failOnError())
 
 });
 
@@ -96,19 +97,60 @@ gulp.task('js-lint', function () {
         .pipe(esLint.failAfterError())
 });
 
-/* Minify JS */
-gulp.task('compress', function () {
+/* Real time run local server in browser  */
+gulp.task('serve', [ 'sass', 'twig', 'scss-lint', 'js-lint' ], function () {
+
+    browserSync.init({
+        server: {
+            baseDir: paths.dist
+        }
+    });
+
+    gulp.watch(paths.srcSCSS, [ 'sass' ]);
+    gulp.watch(paths.srcTwig, [ 'twig' ]);
+    gulp.watch(paths.srcJS).on('change', browserSync.reload);
+});
+
+/* Run dev server tasks */
+gulp.task('default', [ 'serve' ]);
+
+
+/**
+ *   PRODUCTION BUILD
+ */
+
+gulp.task('html:dist', function () {
+    return gulp.src(paths.srcTwig)
+        .pipe(twig()).on('error', (error) => console.log(error))
+        .pipe(cleanHTML())
+        .pipe(gulp.dest(paths.dist));
+});
+
+gulp.task('css:dist', function () {
+    return gulp.src(paths.srcSCSS)
+        .pipe(sass({ outputStyle: 'compressed' })).on('error', sass.logError)
+        .pipe(inline_base64({ baseDir: 'src', debug: true }))
+        .pipe(auto_prefix("last 2 version", "> 1%", { cascade: true }))
+        .pipe(concat('styles.css'))
+        .pipe(cleanCSS())
+        .pipe(gulp.dest(paths.distCSS));
+});
+
+gulp.task('js:dist', function () {
     return gulp.src(paths.srcJS)
-        .pipe(minify())
-        .pipe(gulp.dest(paths.distJS))
+        .pipe(concat('index.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest(paths.distJS));
 });
 
+gulp.task('prod', [ 'html:dist', 'css:dist', 'js:dist' ]);
 
-/* Watch all files from app */
-gulp.task('watch', ['browserSync', 'sass'], function () {
-    gulp.watch(paths.srcSCSS, ['sass']);
-    gulp.watch(paths.srcTwig, browserSync.reload);
-    gulp.watch(paths.srcJS, browserSync.reload);
+gulp.task('build', [ 'prod' ]);
+
+/**
+ *  CLEAN GENERATED CODE
+ */
+
+gulp.task('clean', function () {
+    del([ paths.dist ]);
 });
-
-gulp.task('default', ['twig', 'sass', 'scss-lint', 'js-lint', 'compress', 'watch']);
