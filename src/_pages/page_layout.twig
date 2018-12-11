@@ -9,10 +9,9 @@
     <meta name="description" content="A demo app"/>
     <meta name="author" content="Dan Dediu"/>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    {% block head %}
-        <link rel="stylesheet" href="css/styles.css"/>
-        <title>{% block title %}{% endblock %}</title>
-    {% endblock %}
+    <link rel="stylesheet" href="css/styles.css"/>
+    {% block additional_styles %}{% endblock %}
+    <title>{% block title %}Home{% endblock %}</title>
 </head>
 <body>
 {% set articlesData = [
@@ -103,11 +102,9 @@
 
 {# NAV BAR #}
 <nav>
-    {% block nav %}
-        <a href="index.html">Home</a>
-        <a href="templates/blogs.html">Blogs</a>
-        <a href="templates/article.html">Article</a>
-    {% endblock %}
+    <a href="index.html">Home</a>
+    <a href="blogs.html">Blogs</a>
+    <a href="article.html">Article</a>
 </nav>
 
 
@@ -117,9 +114,7 @@
 
     {% endblock %}
 </div>
+<script src="js/index.js"></script>
+{% block additional_scripts %}{% endblock %}
 </body>
-
-{% block scripts %}
-    <script src="js/index.js"></script>
-{% endblock %}
 </html>

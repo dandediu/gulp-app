@@ -1,22 +1,15 @@
 {# index.html #}
-{% extends "templates/_pages/page_layout.twig" %}
-
-<head>
-    {% block head %}
-        <link rel="stylesheet" href="css/styles.css"/>
-        <title>{% block title %} Home {% endblock %}</title>
-    {% endblock %}
-</head>
+{% extends "_pages/page_layout.twig" %}
 
 {% block content %}
-
     <h1>Home</h1>
     <div class="posts">
         {% set article = articlesData[0] %}
-        {% include 'templates/_card.twig' with article %}
+        {% include '_card.twig' with article %}
 
         {% set article = blogsData[3] %}
-        {% include 'templates/_card.twig' with article %}
+        {% include '_card.twig' with article %}
+
         {# {% for article in articlesData %}
              {%  if loop.first %}
             {%  include 'templates/_card.twig' with article %}
@@ -29,4 +22,3 @@
          {% endfor %}#}
     </div>
 {% endblock %}
-

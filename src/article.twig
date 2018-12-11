@@ -1,0 +1,28 @@
+{# article.html #}
+{% extends "_pages/page_layout.twig" %}
+<head>
+    {% block head %}
+        <link rel="stylesheet" href="css/article.css"/>
+    {% endblock %}
+    {% block title %} Article {% endblock %}
+</head>
+
+{% block content %}
+    <h1 class="test">Article</h1>
+    <div class="posts">
+        {% for article in articlesData %}
+            {% include '_card.twig' with {
+                'title': article.title,
+                'imagePath': article.imagePath,
+                'description': article.description,
+                'link': article.link,
+                'author': article.author,
+                'type': article.type,
+            } only %}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block additional_scripts %}
+    <script src="js/article.js"></script>
+{% endblock %}
