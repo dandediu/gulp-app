@@ -1,0 +1,15 @@
+{# templates/_card.twig #}
+<div class="card">
+    <div class="card-header">
+        <p>{{ article.type }}</p>
+    </div>
+    <div>
+        <img src="{{ article.imagePath }}" alt="no-image" />
+    </div>
+    <div class="card-content">
+        <h3>{{ article.title }}</h3>
+        <h4>{{ article.author }}</h4>
+        <p> {{ article.description }}</p>
+        <a href="{{ article.link }}">See more</a>
+    </div>
+</div>

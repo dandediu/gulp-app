@@ -17,9 +17,13 @@
 
 {% block content %}
     <h1 class="test">
-        some test
+        Blogs
     </h1>
-    <div class="image-container"></div>
+    <div class="posts">
+        {% for article in blogsData %}
+            {% include '_card.twig' with article %}
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block scripts %}

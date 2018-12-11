@@ -15,11 +15,14 @@
     {% endblock %}
 </nav>
 
+
 {% block content %}
-    <h1 class="test">
-        some test article
-    </h1>
-    <div class="image-container"></div>
+    <h1 class="test">Article</h1>
+    <div class="posts">
+        {% for article in articlesData %}
+            {% include '_card.twig' with article %}
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block scripts %}

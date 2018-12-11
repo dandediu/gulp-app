@@ -19,7 +19,7 @@ const browserSync = require('browser-sync').create();
 /* Config for ES Lint */
 const esLintConfig = {
     rules: {
-        'quotes': [ 1, 'single' ],
+        'quotes': [1, 'single'],
         'strict': 2,
         'camelcase': 1,
         "comma-dangle": 2
@@ -36,7 +36,7 @@ const esLintConfig = {
 /* Application paths references */
 const paths = {
     src: 'src/**/*',
-    srcTwig: [ 'src/**/*.twig', '!src/**/_**/*' ], // all .twig files and exclude folders starting with "_"
+    srcTwig: ['src/**/*.twig', '!src/**/_**/*', '!src/**/_*'], //exclude all .twig files and folders starting with "_"
     srcSCSS: 'src/scss/**/*.scss',
     srcJS: 'src/js/**/*.js',
     dist: 'dist',
@@ -106,7 +106,7 @@ gulp.task('js', function () {
 });
 
 /* Real time run local server in browser  */
-gulp.task('serve', [ 'sass', 'twig', 'js', 'scss-lint', 'js-lint' ], function () {
+gulp.task('serve', ['sass', 'twig', 'js', 'scss-lint', 'js-lint'], function () {
 
     browserSync.init({
         server: {
@@ -114,13 +114,14 @@ gulp.task('serve', [ 'sass', 'twig', 'js', 'scss-lint', 'js-lint' ], function ()
         }
     });
 
-    gulp.watch(paths.srcSCSS, [ 'sass' ]);
-    gulp.watch(paths.srcTwig, [ 'twig' ]);
-    gulp.watch(paths.srcJS, [ 'js' ]);
+    gulp.watch(paths.srcSCSS, ['sass', 'scss-lint']);
+    gulp.watch(paths.srcTwig, ['twig']);
+    gulp.watch(paths.srcJS, ['js', 'js-lint']);
+
 });
 
 /* Run dev server tasks */
-gulp.task('default', [ 'serve' ]);
+gulp.task('default', ['serve']);
 
 
 /**
@@ -151,14 +152,14 @@ gulp.task('js:dist', function () {
         .pipe(gulp.dest(paths.distJS));
 });
 
-gulp.task('prod', [ 'html:dist', 'css:dist', 'js:dist' ]);
+gulp.task('prod', ['html:dist', 'css:dist', 'js:dist']);
 
-gulp.task('build', [ 'prod' ]);
+gulp.task('build', ['prod']);
 
 /**
  *  CLEAN GENERATED CODE
  */
 
 gulp.task('clean', function () {
-    del([ paths.dist ]);
+    del([paths.dist]);
 });
