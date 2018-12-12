@@ -1,0 +1,19 @@
+{# about.html #}
+{% extends "_pages/page_layout.twig" %}
+
+{% block title %} About {% endblock %}
+
+{% block content %}
+    <h1 class="test">Article</h1>
+    {% embed "_contacts_block.twig" %}
+        {% block first_block %}
+            Dan
+        {% endblock %}
+        {% block second_block %}
+            Alexander
+        {% endblock %}
+        {% block third_block %}
+            Dan
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
