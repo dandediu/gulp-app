@@ -1,0 +1,30 @@
+{# blogs.html #}
+{% extends "_pages/page_layout.twig" %}
+
+    {% block additional_styles %}
+        <link rel="stylesheet" href="css/blogs.css"/>
+    {% endblock %}
+    {% block title %} Blogs {% endblock %}
+
+
+{% block content %}
+    <h1 class="test">
+        Blogs
+    </h1>
+    <div class="posts">
+        {% for blog in blogsData %}
+            {% include '_card.twig' with {
+                'title': blog.title,
+                'imagePath': blog.imagePath,
+                'description': blog.description,
+                'link': blog.link,
+                'author': blog.author,
+                'type': blog.type,
+            } only %}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block additional_scripts %}
+    <script src="js/blogs.js"></script>
+{% endblock %}

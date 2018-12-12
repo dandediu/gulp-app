@@ -1,8 +1,24 @@
 {# index.html #}
-{% extends "templates/_pages/layout.twig" %}
-{% block page %}
-    <h1 class="test">
-        some test
-    </h1>
-    <div class="image-container"></div>
+{% extends "_pages/page_layout.twig" %}
+
+{% block content %}
+    <h1>Home</h1>
+    <div class="posts">
+        {% set article = articlesData[0] %}
+        {% include '_card.twig' with article %}
+
+        {% set article = blogsData[3] %}
+        {% include '_card.twig' with article %}
+
+        {# {% for article in articlesData %}
+             {%  if loop.first %}
+            {%  include 'templates/_card.twig' with article %}
+             {% endif %}
+         {% endfor %}
+         {% for article in blogsData %}
+             {%  if loop.index == 3 %}
+                 {%  include 'templates/_card.twig' with article %}
+             {% endif %}
+         {% endfor %}#}
+    </div>
 {% endblock %}

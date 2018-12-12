@@ -1,19 +1,61 @@
-html, body {
+@import 'colors';
+
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
-}
-
-.test {
-  background: #6495ed;
-}
-
-::placeholder {
-  color: #34d331;
 }
 
 .image-container {
   background: url('/images/colors.jpg');
   height: 50px;
   width: 50px;
+}
+
+.posts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/// CARD
+.card {
+  box-shadow: 0 4px 8px 0 $shadow-color;
+  transition: 0.3s;
+  width: 400px;
+  margin: 20px;
+
+  img {
+    width: 400px;
+    height: 250px;
+  }
+
+  .card-header {
+    background: $light-grey;
+    padding: 6px 12px;
+
+    p {
+      text-transform: capitalize;
+      color: $dark-grey;
+    }
+  }
+
+  .card-content {
+    padding: 6px 12px;
+
+    a {
+      color: $light-blue;
+      text-decoration: none;
+      transition: 0.3s;
+
+      &:hover {
+        border-bottom: 1px solid $light-blue;
+      }
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 8px 16px 0 $shadow-color;
+  }
 }
